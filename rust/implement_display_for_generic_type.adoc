@@ -1,0 +1,22 @@
+= Implement `fmt::Display` for generic type
+
+== Method
+
+Use `where` clause to tell Rust that `T` can be displayed.
+
+=== Example
+
+Print `Point3d<T>` where `T` is generic type.
+
+[source, rust]
+----
+struct Point3d<T>(T,T,T);
+
+impl<T> std::fmt::Display for Point3d<T>
+    where T: std::fmt::Display
+{
+    fn fmt(&self, f:&mut std::fmt::Formatter) -> std::fmt::Result {
+        write!(f, "({},{},{})", self.0, self.1, self.2)
+    }
+}
+----
