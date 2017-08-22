@@ -1,0 +1,44 @@
+= Recursive type without indirection is illigal
+
+== Cause
+
+Recursive type has infinite size.
+
+This is an example:
+[source, rust]
+----
+enum Tree<T> {
+    EmptyTree,
+    Node {
+        value: T,
+        l: Tree<T>,
+        r: Tree<T>
+    }
+}
+----
+
+The size of this struct is the sum:
+[source, rust]
+----
+size_of::<Tree<T>> == hoge + size_of::<Tree<T>>
+----
+
+That is, the size is infinite.
+
+== Remedy
+
+Put  in a `Box<T>`:
+
+[source, rust]
+----
+enum Tree<T> {
+    EmptyTree,
+    Node {
+        value: T,
+        l: Box<Tree<T>>,
+        r: Box<Tree<T>>
+    }
+}
+----
+
+A `Box<T>` is a pointer, i.e., it has a fixed size.
