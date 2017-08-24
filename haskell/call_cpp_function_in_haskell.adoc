@@ -1,0 +1,97 @@
+= Call C++ Function in Haskell
+
+== Method
+
+Use FFI *via C function*.
+
+=== Haskell source file
+
+[source, haskell]
+----
+{-# LANGUAGE ForeignFunctionInterface #-}
+
+import Foreign.C
+
+foreign import ccall "hello" c_hello :: IO ()
+cHello :: IO()
+cHello = c_hello
+
+main :: IO()
+main = do
+  c_hello
+----
+
+=== C/C++ source files
+
+These are C/C++ source codes to print "hello, world in C++!".
+
+It's important to enclose C++ sources in `extern "C"` to avoid mangling.
+
+.include/hello.h
+[source, c]
+----
+#ifndef __cplusplus
+extern "C" {
+#endif // __cplusplus
+
+// Write C++ source
+void cpp_hello();
+
+#ifndef __cplusplus
+}
+#endif // __cplusplus
+
+// Write C source
+void hello();
+----
+
+.cbits/cpp_hello.cpp
+[source, cpp]
+----
+#include "hello.h"
+#include <iostream>
+
+void cpp_hello() {
+    std::cout << "hello, world in C++!" << std::endl;
+}
+----
+
+.cbits/hello.c
+[source, c]
+----
+#include "hello.h"
+
+void hello() {
+    cpp_hello(); // Call C++ function
+}
+----
+
+=== Setting .cabal file
+
+Tell Cabal about directories in which there are .c files & .h files.
+
+[source, haskell]
+----
+library
+-- ...
+
+-- The C source files to compile
+  c-sources: cbits/hoge.c cbits/cpp-hoge.cpp
+-- The location of the header files
+  include-dirs: include
+-- The header files to be included
+  includes: hoge.h
+-- To compile C++ source files with C compiler
+  extra-libraries: stdc++
+
+-- ...
+----
+
+== References
+
+1. https://wiki.haskell.org/Foreign_Function_Interface[_Foreign Function Interface_^]
+, HaskellWiki
+
+1. Edward Z. Yang,
+http://blog.ezyang.com/2010/06/setting-up-cabal-the-ffi-and-c2hs/[_Setting up Cabal, the FFI and c2hs_^]
+, Inside 245-5D (2010)
