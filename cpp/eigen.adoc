@@ -1,0 +1,25 @@
+= Reminder of Eigen library
+
+https://eigen.tuxfamily.org/dox/[_Documents of Eigen library_^]
+
+== Convert matrix to vector
+
+[source, cpp]
+----
+Eigen::VectorXd vec = Eigen::Map<decltype(vec)>(mat.data(), mat.cols() * mat.rows());
+----
+
+== Convert vector to matrix
+
+[source, cpp]
+----
+Eigen::MatrixXd mat = Eigen::Map<decltype(mat)>(vec.dat(), mat_rows, mat_cols);
+----
+
+== Make rotation matrix
+
+[source, cpp]
+----
+Eigen::MatrixXd rot = Eigen::Rotation2Dd(rad).matrix();
+----
+
