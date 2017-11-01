@@ -13,7 +13,7 @@ Eigen::VectorXd vec = Eigen::Map<decltype(vec)>(mat.data(), mat.cols() * mat.row
 
 [source, cpp]
 ----
-Eigen::MatrixXd mat = Eigen::Map<decltype(mat)>(vec.dat(), mat_rows, mat_cols);
+Eigen::MatrixXd mat = Eigen::Map<decltype(mat)>(vec.data(), mat_rows, mat_cols);
 ----
 
 == Make rotation matrix
